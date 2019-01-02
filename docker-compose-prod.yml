@@ -5,20 +5,20 @@ services:
   users:
     build:
       context: ./services/users
-      dockerfile: Dockerfile-dev
+      dockerfile: Dockerfile-prod
     volumes:
       - './services/users:/usr/src/app'
     ports:
-      - 5001:5000
+      - 80:5000
     environment:
       - FLASK_ENV=development
-      - APP_SETTINGS=project.config.DevelopmentConfig
-      - DATABASE_URL=postgres://postgres:postgres@users-db:5432/users_dev  # new
-      - DATABASE_TEST_URL=postgres://postgres:postgres@users-db:5432/users_test  # new
-    depends_on:  # new
+      - APP_SETTINGS=project.config.ProductionConfig
+      - DATABASE_URL=postgres://postgres:postgres@users-db:5432/users_prod 
+      - DATABASE_TEST_URL=postgres://postgres:postgres@users-db:5432/users_test 
+    depends_on:  
       - users-db
 
-  users-db:  # new
+  users-db:  
     build:
       context: ./services/users/project/db
       dockerfile: Dockerfile
@@ -30,9 +30,9 @@ services:
   nginx:
     build:
       context: ./services/nginx
-      dockerfile: Dockerfile-dev
+      dockerfile: Dockerfile-prod
     restart: always
-    ports:
-      - 80:80
+    expose:
+      - '5000'
     depends_on:
       - users

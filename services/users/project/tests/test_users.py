@@ -70,7 +70,7 @@ class TestUserService(BaseTestCase):
             self.assertEqual(response.status_code, 400)
             self.assertIn('Invalid payload.', data['message'])
             self.assertIn('fail', data['status'])
-    
+
     def test_add_user_duplicate_email(self):
         """Ensure error is thrown if the email already exists."""
         with self.client:
@@ -132,7 +132,7 @@ class TestUserService(BaseTestCase):
             self.assertEqual(response.status_code, 404)
             self.assertIn('User does not exist', data['message'])
             self.assertIn('fail', data['status'])
-    
+
     def test_single_user_incorrect_id(self):
         """Ensure error is thrown if the id does not exist."""
         with self.client:
@@ -142,7 +142,40 @@ class TestUserService(BaseTestCase):
             self.assertIn('User does not exist', data['message'])
             self.assertIn('fail', data['status'])
 
+    def test_main_no_users(self):
+        """Ensure the main route behaves correctly when no users have been
+        added to the database."""
+        response = self.client.get('/')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'All Users', response.data)
+        self.assertIn(b'<p>No users!</p>', response.data)
+
+    def test_main_with_users(self):
+        """Ensure the main route behaves correctly when users have been
+        added to the database."""
+        add_user('michael', 'michael@mherman.org')
+        add_user('fletcher', 'fletcher@notreal.com')
+        with self.client:
+            response = self.client.get('/')
+            self.assertEqual(response.status_code, 200)
+            self.assertIn(b'All Users', response.data)
+            self.assertNotIn(b'<p>No users!</p>', response.data)
+            self.assertIn(b'michael', response.data)
+            self.assertIn(b'fletcher', response.data)
+
+    def test_main_add_user(self):
+        """Ensure a new user can be added to the database."""
+        with self.client:
+            response = self.client.post(
+                '/',
+                data=dict(username='michael', email='michael@sonotreal.com'),
+                follow_redirects=True
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertIn(b'All Users', response.data)
+            self.assertNotIn(b'<p>No users!</p>', response.data)
+            self.assertIn(b'michael', response.data)
+
 
 if __name__ == '__main__':
     unittest.main()
-
