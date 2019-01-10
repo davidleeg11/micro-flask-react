@@ -18,33 +18,25 @@
     <div class="container">
       <div class="column is-one-third">
         <br>
-        <h1 class="title">All Users</h1>
+        <h1 class="title">CSR Migration 0.5</h1>
         <hr><br>
         <form action="/" method="POST">
           <div class="field">
             <input
-              name="username" class="input"
-              type="text" placeholder="Enter a username" required>
+              name="site" class="input"
+              type="text" placeholder="Enter a site" required>
           </div>
-          <div class="field">
-            <input
-              name="email" class="input"
-              type="email" placeholder="Enter an email address" required>
-          </div>
-          <input
-            type="submit" class="button is-primary is-fullwidth"
-            value="Submit">
         </form>
         <br>
         <hr>
-          {% if users %}
+          {% if sites %}
             <ol>
-              {% for user in users %}
-                <li>{{user.username}}</li>
+              {% for site in sites %}
+                <li>{{site.site}}</li>
               {% endfor %}
             </ol>
           {% else %}
-            <p>No users!</p>
+            <p>No sites!</p>
           {% endif %}
         </div>
       </div>

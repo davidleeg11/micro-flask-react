@@ -1,47 +1,75 @@
 import React, { Component } from 'react';  // new
 import ReactDOM from 'react-dom';
 import axios from 'axios';
-import UsersList from './components/UsersList';
-import AddUser from './components/AddUser';
+import SitesList from './components/SitesList';
+import AddSite from './components/AddSite';
+// import UsersList from './components/UsersList';
+// import AddUser from './components/AddUser';
 
 
-// new
 class App extends Component {
  
   constructor() {
     super();
     this.state = {
-      users: [],
-      username: '',
-      email: '',
+      sites: [],
+      site: '',
+      // users: [],
+      // username: '',
+      // email: '',
     };
-    this.addUser = this.addUser.bind(this);  // new
+    this.addSite = this.addSite.bind(this);  // new
     this.handleChange = this.handleChange.bind(this);
+    // this.addUser = this.addUser.bind(this);  // new
+    // this.handleChange = this.handleChange.bind(this);
   };
 
   componentDidMount() {
-    this.getUsers();
+    this.getSites();
   };
   
-  getUsers() { 
-    axios.get(`${process.env.REACT_APP_USERS_SERVICE_URL}/users`)
-    .then((res) => { this.setState({ users: res.data.data.users }); })
+  getSites() { 
+    axios.get(`${process.env.REACT_APP_SITES_SERVICE_URL}/sites`)
+    .then((res) => { this.setState({ sites: res.data.data.sites }); })
     .catch((err) => { console.log(err); });
   }
 
-  addUser(event) {
+  addSite(event) {
     event.preventDefault();
     const data = {
-      username: this.state.username,
-      email: this.state.email
+      site: this.state.site,
     };
-    axios.post(`${process.env.REACT_APP_USERS_SERVICE_URL}/users`, data)
+    axios.post(`${process.env.REACT_APP_SITES_SERVICE_URL}/sites`, data)
     .then((res) => { 
-      this.getUsers();  // new
-      this.setState({ username: '', email: '' });  // new
+      this.getSites();
+      this.setState({ site: ''});
     })
     .catch((err) => { console.log(err); });
   };
+
+  // componentDidMount() {
+  //   this.getUsers();
+  // };
+  
+  // getUsers() { 
+  //   axios.get(`${process.env.REACT_APP_USERS_SERVICE_URL}/users`)
+  //   .then((res) => { this.setState({ users: res.data.data.users }); })
+  //   .catch((err) => { console.log(err); });
+  // }
+
+  // addUser(event) {
+  //   event.preventDefault();
+  //   const data = {
+  //     username: this.state.username,
+  //     email: this.state.email
+  //   };
+  //   axios.post(`${process.env.REACT_APP_USERS_SERVICE_URL}/users`, data)
+  //   .then((res) => { 
+  //     this.getUsers();  // new
+  //     this.setState({ username: '', email: '' });  // new
+  //   })
+  //   .catch((err) => { console.log(err); });
+  //};
 
   handleChange(event) {
     const obj = {};
@@ -53,25 +81,46 @@ class App extends Component {
     return (
       <section className="section">
         <div className="container">
-          <div className="columns">
-            <div className="column is-half">  {/* new */}
+          <div className="columns is-centered">
+            <div className="column is-half ">  {/* new */}
               <br/>
-              <h1 className="title is-1">All Users</h1>
+              <h1 className="title is-2">CSR Migration 0.5</h1>
               <hr/><br/>
-	      <AddUser
-	        username={this.state.username}
-	        email={this.state.email}
-	        addUser={this.addUser}
-	        handleChange={this.handleChange}  // new
-	      />  
+              <AddSite
+                site={this.state.site}
+                addSite={this.addSite}
+                handleChange={this.handleChange}  // new
+              />  
               <br/><br/>  
-              <UsersList users={this.state.users}/>
+              <SitesList sites={this.state.sites}/>
             </div>
           </div>
         </div>
       </section>
     )
   }
+  //   return (
+  //     <section className="section">
+  //       <div className="container">
+  //         <div className="columns is-centered">
+  //           <div className="column is-half ">  {/* new */}
+  //             <br/>
+  //             <h1 className="title is-2">All Users</h1>
+  //             <hr/><br/>
+  //             <AddUser
+  //               username={this.state.username}
+  //               email={this.state.email}
+  //               addUser={this.addUser}
+  //               handleChange={this.handleChange}  // new
+  //             />  
+  //             <br/><br/>  
+  //             <UsersList users={this.state.users}/>
+  //           </div>
+  //         </div>
+  //       </div>
+  //     </section>
+  //   )
+  // }
 }
 
 ReactDOM.render(
