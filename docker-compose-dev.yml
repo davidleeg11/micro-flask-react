@@ -2,21 +2,21 @@ version: '3.3'
 
 services:
 
-  users:
+  sites:
     build:
-      context: ./services/users
+      context: ./services/sites
       dockerfile: Dockerfile-dev
     volumes:
-      - './services/users:/usr/src/app'
+      - './services/sites:/usr/src/app'
     ports:
       - 5001:5000
     environment:
       - FLASK_ENV=development
       - APP_SETTINGS=project.config.DevelopmentConfig
-      - DATABASE_URL=postgres://postgres:postgres@users-db:5432/users_dev  # new
-      - DATABASE_TEST_URL=postgres://postgres:postgres@users-db:5432/users_test  # new
+      - DATABASE_URL=postgres://postgres:postgres@sites-db:5432/sites_dev  # new
+      - DATABASE_TEST_URL=postgres://postgres:postgres@sites-db:5432/sites_test  # new
     depends_on:  # new
-      - users-db
+      - sites-db
 
   client:
     build:
@@ -29,13 +29,13 @@ services:
       - 3007:3000
     environment:
       - NODE_ENV=development
-      - REACT_APP_USERS_SERVICE_URL=${REACT_APP_USERS_SERVICE_URL}
+      - REACT_APP_SITES_SERVICE_URL=${REACT_APP_SITES_SERVICE_URL}
     depends_on:
-      - users
+      - sites
 
-  users-db:  # new
+  sites-db:  # new
     build:
-      context: ./services/users/project/db
+      context: ./services/sites/project/db
       dockerfile: Dockerfile
     ports:
       - 5435:5432
@@ -51,5 +51,5 @@ services:
     ports:
       - 88:88
     depends_on:
-      - users
+      - sites
       - client
